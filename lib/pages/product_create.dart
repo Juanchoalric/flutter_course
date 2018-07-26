@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../products.dart';
+
 class ProductCreatePage extends StatefulWidget {
 
   final Function addProducts;
@@ -15,9 +17,9 @@ class ProductCreatePage extends StatefulWidget {
 
 class ProductCreatePageState extends State<ProductCreatePage> {
 
-  String titleValue = '';
-  String descriptionValue = '';
-  double priceValue;
+  String _titleValue = '';
+  String _descriptionValue = '';
+  double _priceValue;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class ProductCreatePageState extends State<ProductCreatePage> {
             decoration: InputDecoration(labelText: 'Product title'),
             onChanged: (String value) {
               setState(() {
-                            titleValue = value;
+                            _titleValue = value;
                           });
             },
           ),
@@ -37,26 +39,32 @@ class ProductCreatePageState extends State<ProductCreatePage> {
             decoration: InputDecoration(labelText: 'Product Description'),
             maxLines: 4,
             onChanged: (String value) {
-              descriptionValue = value;
+              _descriptionValue = value;
             },
           ),
           TextField(
             decoration: InputDecoration(labelText: 'Product Price'),
             keyboardType: TextInputType.number,
             onChanged: (String value) {
-              priceValue = double.parse(value);
+              _priceValue = double.parse(value);
             },
           ),
+          SizedBox(
+            height: 10.0,
+          ),
           RaisedButton(
+            color: Theme.of(context).accentColor,
+            textColor: Colors.white,
             child: Text('SAVE'),
             onPressed: () {
               final Map<String, dynamic> product = {
-                'title' : titleValue,
-                'description' : descriptionValue,
-                'price' : priceValue,
+                'title' : _titleValue,
+                'description' : _descriptionValue,
+                'price' : _priceValue,
                 'imageUrl' : 'assets/food.jpg'
               };
               widget.addProducts(product);
+              Navigator.pushReplacementNamed(context, '/home');
             },
           )
         ],
