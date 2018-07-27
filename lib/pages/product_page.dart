@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../product_manager.dart';
-import './Product_admin.dart';
+import '../widgets/products/products.dart';
 
 class ProductsPage extends StatelessWidget {
 
@@ -20,6 +19,7 @@ class ProductsPage extends StatelessWidget {
               title: Text("Choose"),
             ),
             ListTile(
+              leading: Icon(Icons.edit),
               title: Text("Manage Product"),
               onTap: () {
                 Navigator.pushNamed(context, '/admin');
@@ -31,8 +31,14 @@ class ProductsPage extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Text("EasyList"),
+        actions: <Widget>[
+          IconButton(
+            color: Colors.white,
+            onPressed: () {},
+            icon: Icon(Icons.favorite),),
+        ],
       ),
-      body: ProductManager(products: products),
+      body: Products(products: products),
     );
   }
 }

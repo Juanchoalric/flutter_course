@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../products.dart';
+import '../widgets/products/products.dart';
 
 class ProductCreatePage extends StatefulWidget {
-
   final Function addProducts;
   final Function deleteProducts;
 
@@ -16,39 +15,61 @@ class ProductCreatePage extends StatefulWidget {
 }
 
 class ProductCreatePageState extends State<ProductCreatePage> {
-
   String _titleValue = '';
   String _descriptionValue = '';
   double _priceValue;
+
+  Widget _buildTitleTextField() {
+    return TextField(
+      decoration: InputDecoration(labelText: 'Product title'),
+      onChanged: (String value) {
+        setState(() {
+          _titleValue = value;
+        });
+      },
+    );
+  }
+
+  Widget _buildDescriptionTextField() {
+    return TextField(
+      decoration: InputDecoration(labelText: 'Product Description'),
+      maxLines: 4,
+      onChanged: (String value) {
+        _descriptionValue = value;
+      },
+    );
+  }
+
+  Widget _buildPriceDoubleField() {
+    return TextField(
+      decoration: InputDecoration(labelText: 'Product Price'),
+      keyboardType: TextInputType.number,
+      onChanged: (String value) {
+        _priceValue = double.parse(value);
+      },
+    );
+  }
+
+  void _submitForm() {
+    final Map<String, dynamic> product = {
+      'title': _titleValue,
+      'description': _descriptionValue,
+      'price': _priceValue,
+      'imageUrl': 'assets/food.jpg'
+    };
+    widget.addProducts(product);
+    Navigator.pushReplacementNamed(context, '/home');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(10.0),
-          child: ListView(
+      child: ListView(
         children: <Widget>[
-          TextField(
-            decoration: InputDecoration(labelText: 'Product title'),
-            onChanged: (String value) {
-              setState(() {
-                            _titleValue = value;
-                          });
-            },
-          ),
-          TextField(
-            decoration: InputDecoration(labelText: 'Product Description'),
-            maxLines: 4,
-            onChanged: (String value) {
-              _descriptionValue = value;
-            },
-          ),
-          TextField(
-            decoration: InputDecoration(labelText: 'Product Price'),
-            keyboardType: TextInputType.number,
-            onChanged: (String value) {
-              _priceValue = double.parse(value);
-            },
-          ),
+          _buildTitleTextField(),
+          _buildDescriptionTextField(),
+          _buildPriceDoubleField(),
           SizedBox(
             height: 10.0,
           ),
@@ -56,16 +77,7 @@ class ProductCreatePageState extends State<ProductCreatePage> {
             color: Theme.of(context).accentColor,
             textColor: Colors.white,
             child: Text('SAVE'),
-            onPressed: () {
-              final Map<String, dynamic> product = {
-                'title' : _titleValue,
-                'description' : _descriptionValue,
-                'price' : _priceValue,
-                'imageUrl' : 'assets/food.jpg'
-              };
-              widget.addProducts(product);
-              Navigator.pushReplacementNamed(context, '/home');
-            },
+            onPressed: _submitForm,
           )
         ],
       ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class AuthPage extends StatefulWidget {
   @override
   AuthPageState createState() {
@@ -11,6 +10,49 @@ class AuthPage extends StatefulWidget {
 class AuthPageState extends State<AuthPage> {
   String _emailValue;
   String _passwordValue;
+  bool _acceptTerms = false;
+
+  DecorationImage _buildBackgroundImage() {
+    return DecorationImage(
+        fit: BoxFit.cover,
+        colorFilter:
+            ColorFilter.mode(Colors.black.withOpacity(.5), BlendMode.dstATop),
+        image: AssetImage("assets/background.jpg"));
+  }
+
+  Widget _builEmailTextField() {
+    return TextField(
+      decoration: InputDecoration(
+          labelText: "Email", filled: true, fillColor: Colors.white),
+      keyboardType: TextInputType.emailAddress,
+      onChanged: (String value) {
+        _emailValue = value;
+      },
+    );
+  }
+
+  Widget _buildPasswordTextField() {
+    return TextField(
+      decoration: InputDecoration(
+          labelText: "Password", filled: true, fillColor: Colors.white),
+      obscureText: true,
+      onChanged: (String value) {
+        _passwordValue = value;
+      },
+    );
+  }
+
+  Widget _buildSwitchTileField(bool value) {
+    return SwitchListTile(
+                  title: Text("Accept terms and services"),
+                  onChanged: (bool value) {
+                    setState(() {
+                      _acceptTerms = value;
+                    });
+                  },
+                  value: _acceptTerms,
+                );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +69,6 @@ class AuthPageState extends State<AuthPage> {
               onTap: () {
                 Navigator.pushNamed(context, '/');
               },
-              
             )
           ],
         ),
@@ -35,37 +76,38 @@ class AuthPageState extends State<AuthPage> {
       appBar: AppBar(
         title: Text('Login'),
       ),
-      body: ListView(
+      body: Container(
         padding: EdgeInsets.all(10.0),
-        children: <Widget>[ 
-          TextField(
-            decoration: InputDecoration(labelText: "Email", ),
-            keyboardType: TextInputType.emailAddress,
-            onChanged: (String value) {
-              _emailValue = value;
-            },
-          ),
-          TextField(
-            decoration: InputDecoration(labelText: "Password", ),
-            obscureText: true,
-            onChanged: (String value) {
-              _passwordValue = value;
-            },
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          RaisedButton(
-          child: Text('LOGIN'),
-          color: Theme.of(context).accentColor,
-          textColor: Colors.white,
-          onPressed: () {
-            print(_emailValue);
-            print(_passwordValue);
-            Navigator.pushReplacementNamed(context, "/home");
-          },
+        decoration: BoxDecoration(
+          image: _buildBackgroundImage(),
         ),
-        ],
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                _builEmailTextField(),
+                SizedBox(
+                  height: 10.0,
+                ),
+                _buildPasswordTextField(),
+                _buildSwitchTileField(_acceptTerms),
+                SizedBox(
+                  height: 10.0,
+                ),
+                RaisedButton(
+                  child: Text('LOGIN'),
+                  color: Theme.of(context).accentColor,
+                  textColor: Colors.white,
+                  onPressed: () {
+                    print(_emailValue);
+                    print(_passwordValue);
+                    Navigator.pushReplacementNamed(context, "/home");
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
