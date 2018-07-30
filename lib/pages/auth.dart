@@ -56,6 +56,9 @@ class AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
+
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -83,28 +86,31 @@ class AuthPageState extends State<AuthPage> {
         ),
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                _builEmailTextField(),
-                SizedBox(
-                  height: 10.0,
-                ),
-                _buildPasswordTextField(),
-                _buildSwitchTileField(_acceptTerms),
-                SizedBox(
-                  height: 10.0,
-                ),
-                RaisedButton(
-                  child: Text('LOGIN'),
-                  color: Theme.of(context).accentColor,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    print(_emailValue);
-                    print(_passwordValue);
-                    Navigator.pushReplacementNamed(context, "/home");
-                  },
-                ),
-              ],
+            child: Container(
+              width: targetWidth,
+                          child: Column(
+                children: <Widget>[
+                  _builEmailTextField(),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  _buildPasswordTextField(),
+                  _buildSwitchTileField(_acceptTerms),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  RaisedButton(
+                    child: Text('LOGIN'),
+                    color: Theme.of(context).accentColor,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      print(_emailValue);
+                      print(_passwordValue);
+                      Navigator.pushReplacementNamed(context, "/home");
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
