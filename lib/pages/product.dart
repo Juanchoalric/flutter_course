@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'package:scoped_model/scoped_model.dart';
+import '../scoped_models/products.dart';
+import '../models/product.dart';
 class ProductPage extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-  final double price;
-  final String description;
 
-  ProductPage(this.title, this.imageUrl, this.price, this.description);
+  final int index;
+
+  ProductPage({this.index});
 
   // void _showWarningDialog(BuildContext context) {
   //   showDialog(
@@ -42,7 +42,11 @@ class ProductPage extends StatelessWidget {
         Navigator.pop(context, false);
         return Future.value(false);
       },
-      child: Scaffold(
+      child: ScopedModelDescendant<ProductsModel>( builder: (BuildContext context, Widget child, ProductsModel model ) {
+        
+        final Product products = model.products[index];
+
+        return Scaffold(
           appBar: AppBar(
             actions: <Widget>[
               IconButton(
@@ -51,19 +55,19 @@ class ProductPage extends StatelessWidget {
                 onPressed: () {},
               )
             ],
-            title: Text(title),
+            title: Text(products.title),
           ),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Image.asset(imageUrl),
+                Image.asset(products.image),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.all(10.0),
-                      child: Text(title, style: TextStyle(fontSize: 30.0, fontFamily: 'Oswald'),),
+                      child: Text(products.title, style: TextStyle(fontSize: 30.0, fontFamily: 'Oswald'),),
                     ),
                     Container(
                       padding: EdgeInsets.all(8.0),
@@ -71,7 +75,7 @@ class ProductPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20.0),
                           color: Theme.of(context).accentColor),
                       child: Text(
-                        '\$${price.toString()}',
+                        '\$${products.price.toString()}',
                         style: TextStyle(fontSize: 30.0, color: Colors.white),
                       ),
                     ),
@@ -85,11 +89,12 @@ class ProductPage extends StatelessWidget {
                 ),
                 Container(
                   padding: EdgeInsets.all(10.0),
-                  child: Text(description, style: TextStyle(fontSize: 15.0, color: Colors.grey),),
+                  child: Text(products.description, style: TextStyle(fontSize: 15.0, color: Colors.grey),),
                 ),
               ],
             ),
-          )),
+          ));
+      },) 
     );
   }
 }
