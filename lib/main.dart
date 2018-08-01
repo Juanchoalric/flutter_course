@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/rendering.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import './models/product.dart';
 import './pages/auth.dart';
 import './pages/Product_admin.dart';
 import './pages/product_page.dart';
