@@ -12,7 +12,7 @@ class ProductCard extends StatelessWidget {
   final Product product;
   final int productIndex;
 
-  ProductCard({this.product, this.productIndex});
+  ProductCard(this.product, this.productIndex);
 
   Widget _buildTitlePriceRow() {
     return Container(
@@ -63,7 +63,7 @@ class ProductCard extends StatelessWidget {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(product.image),
+          Image.network(product.image),
           _buildTitlePriceRow(),
           AdressTag(adress: 'Union Square, San Francisco'),
           Text(product.userEmail),
@@ -71,5 +71,6 @@ class ProductCard extends StatelessWidget {
         ],
       ),
     );
+    ;
   }
 }

@@ -1,44 +1,47 @@
 import 'package:flutter/material.dart';
 
+import 'package:scoped_model/scoped_model.dart';
+
+import '../scoped_models/main.dart';
+
 class AuthPage extends StatefulWidget {
   @override
-  AuthPageState createState() {
-    return new AuthPageState();
+  State<StatefulWidget> createState() {
+    return _AuthPageState();
   }
 }
 
-class AuthPageState extends State<AuthPage> {
+class _AuthPageState extends State<AuthPage> {
   final Map<String, dynamic> _formData = {
-    'email' : null,
-    'password' : null,
-    'acceptTerms' : false,
+    'email': null,
+    'password': null,
+    'acceptTerms': false
   };
-  // String _emailValue;
-  // String _passwordValue;
-  // bool _acceptTerms = false;
-
-   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
-        fit: BoxFit.cover,
-        colorFilter:
-            ColorFilter.mode(Colors.black.withOpacity(.5), BlendMode.dstATop),
-        image: AssetImage("assets/background.jpg"));
+      fit: BoxFit.cover,
+      colorFilter:
+          ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+      image: AssetImage('assets/background.jpg'),
+    );
   }
 
-  Widget _builEmailTextField() {
+  Widget _buildEmailTextField() {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: "Email", filled: true, fillColor: Colors.white),
-      validator: (String value){
-        if(value.isEmpty || !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?").hasMatch(value)){
-          return 'The email must not be empty and have to have a valid form';
+          labelText: 'E-Mail', filled: true, fillColor: Colors.white),
+      keyboardType: TextInputType.emailAddress,
+      validator: (String value) {
+        if (value.isEmpty ||
+            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                .hasMatch(value)) {
+          return 'Please enter a valid email';
         }
       },
-      keyboardType: TextInputType.emailAddress,
       onSaved: (String value) {
-          _formData['email'] = value;
+        _formData['email'] = value;
       },
     );
   }
@@ -46,92 +49,78 @@ class AuthPageState extends State<AuthPage> {
   Widget _buildPasswordTextField() {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: "Password", filled: true, fillColor: Colors.white),
+          labelText: 'Password', filled: true, fillColor: Colors.white),
+      obscureText: true,
       validator: (String value) {
-        if(value.isEmpty || value.length < 6){
-          return 'Password must not be empty and have +6 length';
+        if (value.isEmpty || value.length < 6) {
+          return 'Password invalid';
         }
       },
-      obscureText: true,
       onSaved: (String value) {
-          _formData['password'] = value;
+        _formData['password'] = value;
       },
     );
   }
 
-  Widget _buildSwitchTileField(bool value) {
+  Widget _buildAcceptSwitch() {
     return SwitchListTile(
-                  title: Text("Accept terms and services"),
-                  onChanged: (bool value) {
-                    setState(() {
-                    _formData['acceptTerms'] = value;
-                    });
-                  },
-                  value: _formData['acceptTerms'],
-                );
+      value: _formData['acceptTerms'],
+      onChanged: (bool value) {
+        setState(() {
+          _formData['acceptTerms'] = value;
+        });
+      },
+      title: Text('Accept Terms'),
+    );
   }
 
-  void _submitForm() {
+  void _submitForm(Function login) {
     if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
       return;
     }
     _formKey.currentState.save();
-    Navigator.pushReplacementNamed(context, '/home');
+    login(_formData['email'], _formData['password']);
+    Navigator.pushReplacementNamed(context, '/products');
   }
 
   @override
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
-   
     return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          children: <Widget>[
-            AppBar(
-              automaticallyImplyLeading: false,
-              title: Text("Choose"),
-            ),
-            ListTile(
-              title: Text("All Products"),
-              onTap: () {
-                Navigator.pushNamed(context, '/');
-              },
-            )
-          ],
-        ),
-      ),
       appBar: AppBar(
         title: Text('Login'),
       ),
       body: Container(
-        padding: EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           image: _buildBackgroundImage(),
         ),
-        child: Form(
-          key: _formKey,
-                  child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                width: targetWidth,
-                            child: Column(
+        padding: EdgeInsets.all(10.0),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              width: targetWidth,
+              child: Form(
+                key: _formKey,
+                child: Column(
                   children: <Widget>[
-                    _builEmailTextField(),
+                    _buildEmailTextField(),
                     SizedBox(
                       height: 10.0,
                     ),
                     _buildPasswordTextField(),
-                    _buildSwitchTileField(_formData['acceptTerms']),
+                    _buildAcceptSwitch(),
                     SizedBox(
                       height: 10.0,
                     ),
-                    RaisedButton(
-                      child: Text('LOGIN'),
-                      color: Theme.of(context).accentColor,
-                      textColor: Colors.white,
-                      onPressed: () {
-                        _submitForm();
+                    ScopedModelDescendant<MainModel>(
+                      builder: (BuildContext context, Widget child,
+                          MainModel model) {
+                        return RaisedButton(
+                          textColor: Colors.white,
+                          child: Text('LOGIN'),
+                          onPressed: () => _submitForm(model.login),
+                        );
                       },
                     ),
                   ],

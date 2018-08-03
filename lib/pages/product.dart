@@ -11,7 +11,7 @@ import '../scoped_models/main.dart';
 class ProductPage extends StatelessWidget {
   final int productIndex;
 
-  ProductPage({this.productIndex});
+  ProductPage(this.productIndex);
 
   Widget _buildAddressPriceRow(double price) {
     return Row(
@@ -44,7 +44,7 @@ class ProductPage extends StatelessWidget {
       return Future.value(false);
     }, child: ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        final Product product = model.products[productIndex];
+        final Product product = model.allProducts[productIndex];
         return Scaffold(
           appBar: AppBar(
             title: Text(product.title),
