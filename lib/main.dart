@@ -6,7 +6,7 @@ import './pages/auth.dart';
 import './pages/Product_admin.dart';
 import './pages/product_page.dart';
 import './pages/product.dart';
-import './scoped_models/products.dart';
+import './scoped_models/main.dart';
 
 void main(){
   //debugPaintSizeEnabled = true;
@@ -27,8 +27,8 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<ProductsModel>(
-      model: ProductsModel(),
+    return ScopedModel<MainModel>(
+      model: MainModel(),
           child: MaterialApp(
         //debugShowMaterialGrid: true,
         theme: ThemeData(
@@ -41,7 +41,7 @@ class MyAppState extends State<MyApp> {
         routes: {
           '/': (BuildContext context) => AuthPage(),
           '/home': (BuildContext context) => ProductsPage(),
-          '/admin' : (BuildContext context) => ProductAdminPage(),
+          '/admin' : (BuildContext context) => ProductsAdminPage(),
         },
         onGenerateRoute: (RouteSettings settings) {
           final List<String> pathElements = settings.name.split('/');
@@ -51,7 +51,7 @@ class MyAppState extends State<MyApp> {
           if(pathElements[1] == 'product'){
             final int index = int.parse(pathElements[2]);
          return MaterialPageRoute<bool>(
-                    builder: (BuildContext context) => ProductPage(index: index,));
+                    builder: (BuildContext context) => ProductPage(productIndex: index,));
           }
           return null;
         },
