@@ -6,21 +6,19 @@ import '../widgets/products/products.dart';
 import '../scoped_models/main.dart';
 
 class ProductsPage extends StatefulWidget {
-
   final MainModel model;
 
   ProductsPage(this.model);
 
   @override
-  ProductsPageState createState() {
-    return new ProductsPageState();
+  State<StatefulWidget> createState() {
+    return _ProductsPageState();
   }
 }
 
-class ProductsPageState extends State<ProductsPage> {
-
+class _ProductsPageState extends State<ProductsPage> {
   @override
-  initState(){
+  initState() {
     widget.model.fetchProducts();
     super.initState();
   }
@@ -45,16 +43,17 @@ class ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  Widget _buildProductList(){
-    return ScopedModelDescendant<MainModel>(builder: (BuildContext context, Widget child, MainModel model ){
-      Widget content = Center(child: Text('No Product Found!'));
-      if(model.displayedProducts.length > 0 && !model.isLoading) {
-        content = Products();
-      } else if (model.isLoading){
-        content = Center(child: CircularProgressIndicator());
-      }
-      return content;    
-    },
+  Widget _buildProductsList() {
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        Widget content = Center(child: Text('No Products Found!'));
+        if (model.displayedProducts.length > 0 && !model.isLoading) {
+          content = Products();
+        } else if (model.isLoading) {
+          content = Center(child: CircularProgressIndicator());
+        }
+        return RefreshIndicator(onRefresh: model.fetchProducts, child: content,) ;
+      },
     );
   }
 
@@ -79,7 +78,7 @@ class ProductsPageState extends State<ProductsPage> {
           )
         ],
       ),
-      body: _buildProductList(),
+      body: _buildProductsList(),
     );
   }
 }

@@ -6,7 +6,9 @@ import '../scoped_models/main.dart';
 
 class ProductsAdminPage extends StatelessWidget {
   final MainModel model;
+
   ProductsAdminPage(this.model);
+
   Widget _buildSideDrawer(BuildContext context) {
     return Drawer(
       child: Column(

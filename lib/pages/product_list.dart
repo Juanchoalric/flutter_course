@@ -11,22 +11,23 @@ class ProductListPage extends StatefulWidget {
   ProductListPage(this.model);
 
   @override
-  ProductListPageState createState() {
-    return new ProductListPageState();
-  }
+    State<StatefulWidget> createState() {
+      return _ProductListPageState();
+    }
 }
 
-class ProductListPageState extends State<ProductListPage> {
+class _ProductListPageState extends State<ProductListPage> {
   @override
-  initState(){
+  initState() {
     widget.model.fetchProducts();
     super.initState();
   }
+
   Widget _buildEditButton(BuildContext context, int index, MainModel model) {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
-        model.selectProduct(index);
+        model.selectProduct(model.allProducts[index].id);
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) {
@@ -48,7 +49,7 @@ class ProductListPageState extends State<ProductListPage> {
               key: Key(model.allProducts[index].title),
               onDismissed: (DismissDirection direction) {
                 if (direction == DismissDirection.endToStart) {
-                  model.selectProduct(index);
+                  model.selectProduct(model.allProducts[index].id);
                   model.deleteProduct();
                 } else if (direction == DismissDirection.startToEnd) {
                   print('Swiped start to end');
