@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:async';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,9 +12,10 @@ class ConnectedProductsModel extends Model {
   User _authenticatedUser;
   bool _isLoading = false;
 
-  void addProduct(
+  Future<Null> addProduct(
       String title, String description, String image, double price) {
     _isLoading = true;
+    notifyListeners();
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
@@ -24,7 +25,7 @@ class ConnectedProductsModel extends Model {
       'userEmail': _authenticatedUser.email,
       'userId': _authenticatedUser.id,
     };
-    http
+    return http
         .post('https://flutter-products-7d0dd.firebaseio.com/products.json',
             body: json.encode(productData))
         .then((http.Response response) {
@@ -73,31 +74,66 @@ class ProductsModel extends ConnectedProductsModel {
     return _showFavorites;
   }
 
-  void updateProduct(
+  Future<Null> updateProduct(
       String title, String description, String image, double price) {
-    final Product updatedProduct = Product(
-        title: title,
-        description: description,
-        image: image,
-        price: price,
-        userEmail: selectedProduct.userEmail,
-        userId: selectedProduct.userId);
-    _products[selectedProductIndex] = updatedProduct;
+    _isLoading = true;
     notifyListeners();
+    final Map<String, dynamic> updateData = {
+      'title': title,
+      'description': description,
+      'image':
+          'https://s3-ap-southeast-1.amazonaws.com/easystore.co/152102/files/255890.jpg',
+      'price': price,
+      'userEmail': selectedProduct.userEmail,
+      'userId': selectedProduct.userId
+    };
+    return http
+        .put(
+            'https://flutter-products-7d0dd.firebaseio.com/products/${selectedProduct.id}.json',
+            body: json.encode(updateData))
+        .then((http.Response response) {
+      _isLoading = false;
+      final Product updatedProduct = Product(
+          id: selectedProduct.id,
+          title: title,
+          description: description,
+          image: image,
+          price: price,
+          userEmail: selectedProduct.userEmail,
+          userId: selectedProduct.userId);
+      _products[selectedProductIndex] = updatedProduct;
+      notifyListeners();
+    });
   }
 
   void deleteProduct() {
+    _isLoading = true;
+    final String selectedProductId = selectedProduct.id;
     _products.removeAt(selectedProductIndex);
+    _selProductIndex = null;
     notifyListeners();
+    http
+        .delete(
+            'https://flutter-products-7d0dd.firebaseio.com/products/${selectedProductId}.json')
+        .then((http.Response response) {
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void fetchProducts() {
+    _isLoading = true;
+    notifyListeners();
     http
         .get('https://flutter-products-7d0dd.firebaseio.com/products.json')
         .then((http.Response response) {
-      _isLoading = false;
       final List<Product> fetchedProductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
+      if (productListData == null) {
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
       productListData.forEach((String productId, dynamic productData) {
         final Product product = Product(
           id: productId,
@@ -111,7 +147,7 @@ class ProductsModel extends ConnectedProductsModel {
         fetchedProductList.add(product);
       });
       _products = fetchedProductList;
-      _isLoading = true;
+      _isLoading = false;
       notifyListeners();
     });
   }
