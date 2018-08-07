@@ -27,7 +27,7 @@ class _AuthPageState extends State<AuthPage> {
       fit: BoxFit.cover,
       colorFilter:
           ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
-      image: AssetImage('assets/background.jpg'),
+      image: AssetImage('assets/background2.jpeg'),
     );
   }
 
@@ -100,7 +100,7 @@ class _AuthPageState extends State<AuthPage> {
     successInformation = await authenticate(
         _formData['email'], _formData['password'], _authMode);
     if (successInformation['success']) {
-      Navigator.pushReplacementNamed(context, '/products');
+      // Navigator.pushReplacementNamed(context, '/');
     } else {
       showDialog(
         context: context,
