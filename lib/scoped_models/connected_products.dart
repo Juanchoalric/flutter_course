@@ -9,6 +9,7 @@ import 'package:rxdart/subjects.dart';
 import '../models/product.dart';
 import '../models/user.dart';
 import '../models/auth.dart';
+import '../models/location_data.dart';
 
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
@@ -55,8 +56,8 @@ class ProductsModel extends ConnectedProductsModel {
     return _showFavorites;
   }
 
-  Future<bool> addProduct(
-      String title, String description, String image, double price) async {
+  Future<bool> addProduct(String title, String description, String image,
+      double price, LocationData locData) async {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> productData = {
@@ -66,7 +67,10 @@ class ProductsModel extends ConnectedProductsModel {
           'https://upload.wikimedia.org/wikipedia/commons/6/68/Chocolatebrownie.JPG',
       'price': price,
       'userEmail': _authenticatedUser.email,
-      'userId': _authenticatedUser.id
+      'userId': _authenticatedUser.id,
+      'loc_lat': locData.latitude,
+      'loc_lng': locData.longitude,
+      'loc_address': locData.address
     };
     try {
       final http.Response response = await http.post(
@@ -85,6 +89,7 @@ class ProductsModel extends ConnectedProductsModel {
           description: description,
           image: image,
           price: price,
+          location: locData,
           userEmail: _authenticatedUser.email,
           userId: _authenticatedUser.id);
       _products.add(newProduct);
@@ -104,7 +109,7 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   Future<bool> updateProduct(
-      String title, String description, String image, double price) {
+      String title, String description, String image, double price, LocationData location) {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> updateData = {
@@ -118,7 +123,7 @@ class ProductsModel extends ConnectedProductsModel {
     };
     return http
         .put(
-            'https://flutter-products-7d0dd.firebaseio.com/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
+            'https://flutter-products-7d0dd.firebaseio.com/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
             body: json.encode(updateData))
         .then((http.Response reponse) {
       _isLoading = false;
@@ -128,6 +133,7 @@ class ProductsModel extends ConnectedProductsModel {
           description: description,
           image: image,
           price: price,
+          location: location,
           userEmail: selectedProduct.userEmail,
           userId: selectedProduct.userId);
       _products[selectedProductIndex] = updatedProduct;
@@ -160,7 +166,7 @@ class ProductsModel extends ConnectedProductsModel {
     });
   }
 
-  Future<Null> fetchProducts({onlyforUser = false}) {
+  Future<Null> fetchProducts({onlyForUser = false}) {
     _isLoading = true;
     notifyListeners();
     return http
@@ -181,14 +187,23 @@ class ProductsModel extends ConnectedProductsModel {
             description: productData['description'],
             image: productData['image'],
             price: productData['price'],
+            location: LocationData(
+                address: productData['loc_address'],
+                latitude: productData['loc_lat'],
+                longitude: productData['loc_lng']),
             userEmail: productData['userEmail'],
             userId: productData['userId'],
-            isFavorite: productData['wishlistUsers'] == null ? false : (productData['wishlistUsers'] as Map<String, dynamic>).containsKey(_authenticatedUser.id));
+            isFavorite: productData['wishlistUsers'] == null
+                ? false
+                : (productData['wishlistUsers'] as Map<String, dynamic>)
+                    .containsKey(_authenticatedUser.id));
         fetchedProductList.add(product);
       });
-      _products = onlyforUser ? fetchedProductList.where((Product product) {
-        return product.userId == _authenticatedUser.id;
-      }).toList() : fetchedProductList;
+      _products = onlyForUser
+          ? fetchedProductList.where((Product product) {
+              return product.userId == _authenticatedUser.id;
+            }).toList()
+          : fetchedProductList;
       _isLoading = false;
       notifyListeners();
       _selProductId = null;
@@ -207,6 +222,7 @@ class ProductsModel extends ConnectedProductsModel {
         title: selectedProduct.title,
         description: selectedProduct.description,
         price: selectedProduct.price,
+        location: selectedProduct.location,
         image: selectedProduct.image,
         userEmail: selectedProduct.userEmail,
         userId: selectedProduct.userId,
@@ -228,6 +244,7 @@ class ProductsModel extends ConnectedProductsModel {
           title: selectedProduct.title,
           description: selectedProduct.description,
           price: selectedProduct.price,
+          location: selectedProduct.location,
           image: selectedProduct.image,
           userEmail: selectedProduct.userEmail,
           userId: selectedProduct.userId,
@@ -239,7 +256,9 @@ class ProductsModel extends ConnectedProductsModel {
 
   void selectProduct(String productId) {
     _selProductId = productId;
-    notifyListeners();
+    if (productId != null) {
+      notifyListeners();
+    }
   }
 
   void toggleDisplayMode() {

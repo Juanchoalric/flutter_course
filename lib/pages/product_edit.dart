@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
+import '../widgets/form_inputs/location.dart';
 import '../models/product.dart';
 import '../scoped_models/main.dart';
-import '../widgets/form_inputs/location.dart';
+import '../models/location_data.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -18,64 +19,78 @@ class _ProductEditPageState extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image': 'assets/food.jpg'
+    'image': 'assets/food.jpg',
+    'location': null
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
+  final _titleTextController = TextEditingController();
 
   Widget _buildTitleTextField(Product product) {
+    if(product == null && _titleTextController.text.trim() == ''){
+      _titleTextController.text = '';
+    } else if (product != null && _titleTextController.text.trim() == ''){
+      _titleTextController.text = product.title;
+    } else if (product != null && _titleTextController.text.trim() != ''){
+      _titleTextController.text = _titleTextController.text;
+    } else if (product == null && _titleTextController.text.trim() != ''){
+      _titleTextController.text = _titleTextController.text;
+    } else {
+      _titleTextController.text = '';
+    }
     return TextFormField(
-        focusNode: _titleFocusNode,
-        decoration: InputDecoration(labelText: 'Product Title'),
-        initialValue: product == null ? '' : product.title,
-        validator: (String value) {
-          // if (value.trim().length <= 0) {
-          if (value.isEmpty || value.length < 5) {
-            return 'Title is required and should be 5+ characters long.';
-          }
-        },
-        onSaved: (String value) {
-          _formData['title'] = value;
-        },
+      focusNode: _titleFocusNode,
+      decoration: InputDecoration(labelText: 'Product Title'),
+      initialValue: product == null ? '' : product.title,
+      validator: (String value) {
+        // if (value.trim().length <= 0) {
+        if (value.isEmpty || value.length < 5) {
+          return 'Title is required and should be 5+ characters long.';
+        }
+      },
+      onSaved: (String value) {
+        _formData['title'] = value;
+      },
     );
   }
 
   Widget _buildDescriptionTextField(Product product) {
     return TextFormField(
-        focusNode: _descriptionFocusNode,
-        maxLines: 4,
-        decoration: InputDecoration(labelText: 'Product Description'),
-        initialValue: product == null ? '' : product.description,
-        validator: (String value) {
-          // if (value.trim().length <= 0) {
-          if (value.isEmpty || value.length < 10) {
-            return 'Description is required and should be 10+ characters long.';
-          }
-        },
-        onSaved: (String value) {
-          _formData['description'] = value;
-        },
+      focusNode: _descriptionFocusNode,
+      maxLines: 4,
+      decoration: InputDecoration(labelText: 'Product Description'),
+      controller: _titleTextController,
+      initialValue: product == null ? '' : product.description,
+      validator: (String value) {
+        // if (value.trim().length <= 0) {
+        if (value.isEmpty || value.length < 10) {
+          return 'Description is required and should be 10+ characters long.';
+        }
+      },
+      onSaved: (String value) {
+        _formData['description'] = value;
+      },
     );
   }
 
   Widget _buildPriceTextField(Product product) {
     return TextFormField(
-        focusNode: _priceFocusNode,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(labelText: 'Product Price'),
-        initialValue: product == null ? '' : product.price.toString(),
-        validator: (String value) {
-          // if (value.trim().length <= 0) {
-          if (value.isEmpty ||
-              !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
-            return 'Price is required and should be a number.';
-          }
-        },
-        onSaved: (String value) {
-          _formData['price'] = double.parse(value);
-        },
+      focusNode: _priceFocusNode,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(labelText: 'Product Price'),
+      initialValue: product == null ? '' : product.price.toString(),
+      validator: (String value) {
+        // if (value.trim().length <= 0) {
+        if (value.isEmpty ||
+            !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
+          return 'Price is required and should be a number.';
+        }
+      },
+      onSaved: (String value) {
+        _formData['price'] = double.parse(value);
+      },
     );
   }
 
@@ -118,7 +133,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               SizedBox(
                 height: 10.0,
               ),
-              LocationInput(),
+              LocationInput(_setLocation, product),
               SizedBox(
                 height: 10.0,
               ),
@@ -138,6 +153,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
+  void _setLocation(LocationData locData) {
+    _formData['location'] = locData;
+  }
+
   void _submitForm(
       Function addProduct, Function updateProduct, Function setSelectedProduct,
       [int selectedProductIndex]) {
@@ -146,15 +165,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
     }
     _formKey.currentState.save();
     if (selectedProductIndex == -1) {
-      addProduct(
-        _formData['title'],
-        _formData['description'],
-        _formData['image'],
-        _formData['price'],
-      ).then((bool success) {
+      addProduct(_titleTextController.text, _formData['description'],
+              _formData['image'], _formData['price'], _formData['location'])
+          .then((bool success) {
         if (success) {
-          Navigator
-              .pushReplacementNamed(context, '/products')
+          Navigator.pushReplacementNamed(context, '/products')
               .then((_) => setSelectedProduct(null));
         } else {
           showDialog(
@@ -175,12 +190,12 @@ class _ProductEditPageState extends State<ProductEditPage> {
       });
     } else {
       updateProduct(
-        _formData['title'],
+        _titleTextController.text,
         _formData['description'],
         _formData['image'],
         _formData['price'],
-      ).then((_) => Navigator
-          .pushReplacementNamed(context, '/products')
+        _formData['location'],
+      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null)));
     }
   }
