@@ -13,12 +13,12 @@ class ProductPage extends StatelessWidget {
 
   ProductPage(this.product);
 
-  Widget _buildAddressPriceRow(double price) {
+  Widget _buildAddressPriceRow(String address,double price) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          'Union Square, San Francisco',
+          address,
           style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
         ),
         Container(
@@ -55,13 +55,13 @@ class ProductPage extends StatelessWidget {
               image: NetworkImage(product.image),
               height: 300.0,
               fit: BoxFit.cover,
-              placeholder: AssetImage('assets/food.jpg'),
+              placeholder: AssetImage('assets/orange.png'),
             ),
             Container(
               padding: EdgeInsets.all(10.0),
               child: TitleDefault(product.title),
             ),
-            _buildAddressPriceRow(product.price),
+            _buildAddressPriceRow(product.location.address ,product.price),
             Container(
               padding: EdgeInsets.all(10.0),
               child: Text(

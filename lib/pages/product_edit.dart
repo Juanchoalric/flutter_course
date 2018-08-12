@@ -29,68 +29,68 @@ class _ProductEditPageState extends State<ProductEditPage> {
   final _titleTextController = TextEditingController();
 
   Widget _buildTitleTextField(Product product) {
-    if(product == null && _titleTextController.text.trim() == ''){
+    if (product == null && _titleTextController.text.trim() == '') {
       _titleTextController.text = '';
-    } else if (product != null && _titleTextController.text.trim() == ''){
+    } else if (product != null && _titleTextController.text.trim() == '') {
       _titleTextController.text = product.title;
-    } else if (product != null && _titleTextController.text.trim() != ''){
+    } else if (product != null && _titleTextController.text.trim() != '') {
       _titleTextController.text = _titleTextController.text;
-    } else if (product == null && _titleTextController.text.trim() != ''){
+    } else if (product == null && _titleTextController.text.trim() != '') {
       _titleTextController.text = _titleTextController.text;
     } else {
       _titleTextController.text = '';
     }
     return TextFormField(
-      focusNode: _titleFocusNode,
-      decoration: InputDecoration(labelText: 'Product Title'),
-      initialValue: product == null ? '' : product.title,
-      validator: (String value) {
-        // if (value.trim().length <= 0) {
-        if (value.isEmpty || value.length < 5) {
-          return 'Title is required and should be 5+ characters long.';
-        }
-      },
-      onSaved: (String value) {
-        _formData['title'] = value;
-      },
+        focusNode: _titleFocusNode,
+        decoration: InputDecoration(labelText: 'Product Title'),
+        controller: _titleTextController,
+        // initialValue: product == null ? '' : product.title,
+        validator: (String value) {
+          // if (value.trim().length <= 0) {
+          if (value.isEmpty || value.length < 5) {
+            return 'Title is required and should be 5+ characters long.';
+          }
+        },
+        onSaved: (String value) {
+          _formData['title'] = value;
+        },
     );
   }
 
   Widget _buildDescriptionTextField(Product product) {
     return TextFormField(
-      focusNode: _descriptionFocusNode,
-      maxLines: 4,
-      decoration: InputDecoration(labelText: 'Product Description'),
-      controller: _titleTextController,
-      initialValue: product == null ? '' : product.description,
-      validator: (String value) {
-        // if (value.trim().length <= 0) {
-        if (value.isEmpty || value.length < 10) {
-          return 'Description is required and should be 10+ characters long.';
-        }
-      },
-      onSaved: (String value) {
-        _formData['description'] = value;
-      },
+        focusNode: _descriptionFocusNode,
+        maxLines: 4,
+        decoration: InputDecoration(labelText: 'Product Description'),
+        initialValue: product == null ? '' : product.description,
+        validator: (String value) {
+          // if (value.trim().length <= 0) {
+          if (value.isEmpty || value.length < 10) {
+            return 'Description is required and should be 10+ characters long.';
+          }
+        },
+        onSaved: (String value) {
+          _formData['description'] = value;
+        },
     );
   }
 
   Widget _buildPriceTextField(Product product) {
     return TextFormField(
-      focusNode: _priceFocusNode,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(labelText: 'Product Price'),
-      initialValue: product == null ? '' : product.price.toString(),
-      validator: (String value) {
-        // if (value.trim().length <= 0) {
-        if (value.isEmpty ||
-            !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
-          return 'Price is required and should be a number.';
-        }
-      },
-      onSaved: (String value) {
-        _formData['price'] = double.parse(value);
-      },
+        focusNode: _priceFocusNode,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(labelText: 'Product Price'),
+        initialValue: product == null ? '' : product.price.toString(),
+        validator: (String value) {
+          // if (value.trim().length <= 0) {
+          if (value.isEmpty ||
+              !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
+            return 'Price is required and should be a number.';
+          }
+        },
+        onSaved: (String value) {
+          _formData['price'] = double.parse(value);
+        },
     );
   }
 
@@ -165,11 +165,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
     }
     _formKey.currentState.save();
     if (selectedProductIndex == -1) {
-      addProduct(_titleTextController.text, _formData['description'],
-              _formData['image'], _formData['price'], _formData['location'])
-          .then((bool success) {
+      addProduct(
+          _titleTextController.text,
+          _formData['description'],
+          _formData['image'],
+          _formData['price'],
+          _formData['location']).then((bool success) {
         if (success) {
-          Navigator.pushReplacementNamed(context, '/products')
+          Navigator
+              .pushReplacementNamed(context, '/products')
               .then((_) => setSelectedProduct(null));
         } else {
           showDialog(
@@ -195,7 +199,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['image'],
         _formData['price'],
         _formData['location'],
-      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
+      ).then((_) => Navigator
+          .pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null)));
     }
   }
