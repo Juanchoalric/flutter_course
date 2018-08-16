@@ -27,7 +27,7 @@ class _ProductFabState extends State<ProductFab> {
               backgroundColor: Theme.of(context).cardColor,
               heroTag: 'contact',
               mini: true,
-              onPressed: () {
+              onPressed: () async {
                 final url = 'mailto:${widget.product.userEmail}';
                 if(await canLaunch(url)){
 
