@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/form_inputs/location.dart';
+import '../widgets/form_inputs/image.dart';
 import '../models/product.dart';
 import '../scoped_models/main.dart';
 import '../models/location_data.dart';
@@ -19,7 +22,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image': 'assets/food.jpg',
+    'image': null,
     'location': null
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -27,6 +30,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
   final _descriptionFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
   final _titleTextController = TextEditingController();
+  final _descriptionTextController = TextEditingController();
 
   Widget _buildTitleTextField(Product product) {
     if (product == null && _titleTextController.text.trim() == '') {
@@ -58,11 +62,18 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   Widget _buildDescriptionTextField(Product product) {
+    if (product == null && _descriptionTextController.text.trim() == '') {
+      _descriptionTextController.text = '';
+    } else if (product != null &&
+        _descriptionTextController.text.trim() == '') {
+      _descriptionTextController.text = product.description;
+    }
     return TextFormField(
         focusNode: _descriptionFocusNode,
         maxLines: 4,
         decoration: InputDecoration(labelText: 'Product Description'),
-        initialValue: product == null ? '' : product.description,
+        // initialValue: product == null ? '' : product.description,
+        controller: _descriptionTextController,
         validator: (String value) {
           // if (value.trim().length <= 0) {
           if (value.isEmpty || value.length < 10) {
@@ -134,6 +145,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 height: 10.0,
               ),
               LocationInput(_setLocation, product),
+              SizedBox(height: 10.0),
+              ImageInput(_setImage, product),
               SizedBox(
                 height: 10.0,
               ),
@@ -157,17 +170,22 @@ class _ProductEditPageState extends State<ProductEditPage> {
     _formData['location'] = locData;
   }
 
+  void _setImage(File image) {
+    _formData['image'] = image;
+  }
+
   void _submitForm(
       Function addProduct, Function updateProduct, Function setSelectedProduct,
       [int selectedProductIndex]) {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState.validate() ||
+        (_formData['image'] == null && selectedProductIndex == -1)) {
       return;
     }
     _formKey.currentState.save();
     if (selectedProductIndex == -1) {
       addProduct(
           _titleTextController.text,
-          _formData['description'],
+          _descriptionTextController.text,
           _formData['image'],
           _formData['price'],
           _formData['location']).then((bool success) {
@@ -195,7 +213,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     } else {
       updateProduct(
         _titleTextController.text,
-        _formData['description'],
+        _descriptionTextController.text,
         _formData['image'],
         _formData['price'],
         _formData['location'],
