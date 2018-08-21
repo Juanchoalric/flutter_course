@@ -10,12 +10,14 @@ import './pages/product_page.dart';
 import './pages/product.dart';
 import './scoped_models/main.dart';
 import './models/product.dart';
+import './widgets/helpers/custom_route.dart';
+import './globals/global_config.dart';
 
 void main() {
   // debugPaintSizeEnabled = true;
   // debugPaintBaselinesEnabled = true;
   // debugPaintPointersEnabled = true;
-  MapView.setApiKey("AIzaSyBC_LyGAwFzWiT7GqSKMfg3_H6o-g94pLY");
+  MapView.setApiKey(apiKey);
   runApp(MyApp());
 }
 
@@ -59,7 +61,7 @@ class _MyAppState extends State<MyApp> {
         },
         onGenerateRoute: (RouteSettings settings) {
           if(!_isAuthenticated){
-            return MaterialPageRoute<bool>(
+            return CustomRoute<bool>(
               builder: (BuildContext context) => AuthPage(),);
           }
           final List<String> pathElements = settings.name.split('/');

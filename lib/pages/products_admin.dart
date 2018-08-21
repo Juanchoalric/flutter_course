@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import './product_edit.dart';
 import './product_list.dart';
-import '../scoped_models/main.dart';
 import '../widgets/ui_elements/logout_list_tile.dart';
+import '../scoped_models/main.dart';
 
 class ProductsAdminPage extends StatelessWidget {
   final MainModel model;
@@ -26,7 +26,7 @@ class ProductsAdminPage extends StatelessWidget {
             },
           ),
           Divider(),
-          LogoutListTile(),
+          LogoutListTile()
         ],
       ),
     );
