@@ -99,7 +99,7 @@ class _LocationInputState extends State<LocationInput> {
       '/maps/api/geocode/json',
       {
         'latlng': '${lat.toString()},${lng.toString()}',
-        'key': apiKey,
+        'key': apiKey
       },
     );
     final http.Response response = await http.get(uri);
@@ -110,6 +110,7 @@ class _LocationInputState extends State<LocationInput> {
 
   void _getUserLocation() async {
     final location = geoloc.Location();
+
     try {
       final currentLocation = await location.getLocation;
       final address = await _getAddress(
@@ -123,10 +124,10 @@ class _LocationInputState extends State<LocationInput> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(
-                'Could not fetch Location',
+              title: Text('Could not fetch Location'),
+              content: Text(
+                'Please add an address manually!',
               ),
-              content: Text('Please add an address manually'),
               actions: <Widget>[
                 FlatButton(
                   child: Text('Okay'),
@@ -150,16 +151,16 @@ class _LocationInputState extends State<LocationInput> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        TextFormField(
-          focusNode: _addressInputFocusNode,
-          controller: _addressInputController,
-          validator: (String value) {
-            if (_locationData == null || value.isEmpty) {
-              return 'No valid location found.';
-            }
-          },
-          decoration: InputDecoration(labelText: 'Address'),
-        ),
+         TextFormField(
+            focusNode: _addressInputFocusNode,
+            controller: _addressInputController,
+            validator: (String value) {
+              if (_locationData == null || value.isEmpty) {
+                return 'No valid location found.';
+              }
+            },
+            decoration: InputDecoration(labelText: 'Address'),
+          ),
         SizedBox(height: 10.0),
         FlatButton(
           child: Text('Locate User'),

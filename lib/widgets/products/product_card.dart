@@ -28,7 +28,7 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           Flexible(
-            child: PriceTag( price: product.price.toString()),
+            child: PriceTag(product.price.toString()),
           )
         ],
       ),

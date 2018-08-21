@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'dart:async';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:map_view/map_view.dart';
@@ -12,6 +15,7 @@ import './scoped_models/main.dart';
 import './models/product.dart';
 import './widgets/helpers/custom_route.dart';
 import './globals/global_config.dart';
+import './globals/adaptive_theme.dart';
 
 void main() {
   // debugPaintSizeEnabled = true;
@@ -30,7 +34,19 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final MainModel _model = MainModel();
+  final _platformChannel = MethodChannel('flutter-course.com/battery');
   bool _isAuthenticated = false;
+
+  Future<Null> _getBatteryLevel() async {
+    String batteryLevel;
+    try {
+      final int result = await _platformChannel.invokeMethod('getBatteryLevel');
+    batteryLevel = 'Battery level is $result %.';
+    } catch (error){
+      batteryLevel = ' Failed to get battery level';
+    }
+    print(batteryLevel);
+  }
 
   @override
   void initState() {
@@ -40,6 +56,7 @@ class _MyAppState extends State<MyApp> {
               _isAuthenticated = isAuthenticated;
             });
     });
+    _getBatteryLevel();
     super.initState();
   }
 
@@ -48,12 +65,10 @@ class _MyAppState extends State<MyApp> {
     return ScopedModel<MainModel>(
       model: _model,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Kioto',
         // debugShowMaterialGrid: true,
-        theme: ThemeData(
-            brightness: Brightness.light,
-            primarySwatch: Colors.deepOrange,
-            accentColor: Colors.deepPurple,
-            buttonColor: Colors.deepPurple),
+        theme: getAdaptiveThemeData(context),
         // home: AuthPage(),
         routes: {
           '/': (BuildContext context) => !_isAuthenticated ? AuthPage() : ProductsPage(_model),
