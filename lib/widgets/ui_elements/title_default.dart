@@ -11,9 +11,8 @@ class TitleDefault extends StatelessWidget {
     return Text(
       title,
       softWrap: true,
-      textAlign: TextAlign.center,
       style: TextStyle(
-          fontSize: deviceWidth > 700 ? 26.0 : 14.0, fontWeight: FontWeight.bold, fontFamily: 'Oswald'),
+          fontSize: deviceWidth > 700 ? 26.0 : 18.0, fontWeight: FontWeight.bold, fontFamily: 'Oswald', color: Colors.black87),
     );
   }
 }

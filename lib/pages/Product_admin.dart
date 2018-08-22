@@ -12,12 +12,13 @@ class ProductsAdminPage extends StatelessWidget {
 
   Widget _buildSideDrawer(BuildContext context) {
     return Drawer(
-      child: Column(
+      child: ListView(
         children: <Widget>[
-          AppBar(
-            automaticallyImplyLeading: false,
-            title: Text('Choose'),
-            elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
+          DrawerHeader(
+            child: new Text("Kioto", style: TextStyle(fontFamily: 'Oswald', color: Colors.black87, fontSize: 30.0),),
+            decoration: BoxDecoration(
+              image: DecorationImage(image: AssetImage('assets/clouds.jpg'), fit: BoxFit.cover),
+            ),
           ),
           ListTile(
             leading: Icon(Icons.shop),

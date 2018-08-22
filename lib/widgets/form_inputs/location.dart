@@ -112,7 +112,7 @@ class _LocationInputState extends State<LocationInput> {
     final location = geoloc.Location();
 
     try {
-      final currentLocation = await location.getLocation;
+      final currentLocation = await location.getLocation();
       final address = await _getAddress(
           currentLocation['latitude'], currentLocation['longitude']);
       _getStaticMap(address,

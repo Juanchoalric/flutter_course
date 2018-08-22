@@ -40,28 +40,15 @@ class ProductPage extends StatelessWidget {
   }
 
   Widget _buildAddressPriceRow(String address, double price) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        GestureDetector(
-          onTap: _showMap,
-          child: Text(
-            address,
-            style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
-          ),
+
+    var splitLocation = address.split(",");
+
+
+    return Container(
+        child: Text(
+          splitLocation[0],
+          style: TextStyle(fontFamily: 'Oswald', color: Colors.black87),
         ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 5.0),
-          child: Text(
-            '|',
-            style: TextStyle(color: Colors.grey),
-          ),
-        ),
-        Text(
-          '\$' + price.toString(),
-          style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
-        )
-      ],
     );
   }
 
@@ -101,15 +88,27 @@ class ProductPage extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(10.0),
                     alignment: Alignment.center,
-                    child: TitleDefault(product.title),
+                    child: Text(product.title, style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Oswald', fontSize: 23.0),),
                   ),
-                  _buildAddressPriceRow(
-                      product.location.address, product.price),
+                  GestureDetector(
+                    onTap: _showMap,
+                                      child: Container(
+                      color: Colors.deepPurple,
+                                        child: ListTile(
+                        title: _buildAddressPriceRow(
+                            product.location.address, product.price),
+                            subtitle: Text("Show Map", style: TextStyle(color: Colors.white),),
+                        trailing: Text(
+          '\$' + product.price.toString(),
+          style: TextStyle(fontFamily: 'Oswald', color: Colors.white, fontSize: 20.0),
+        ),
+                      ),
+                    ),
+                  ),
                   Container(
                     padding: EdgeInsets.all(10.0),
                     child: Text(
                       product.description,
-                      textAlign: TextAlign.center,
                     ),
                   )
                 ],

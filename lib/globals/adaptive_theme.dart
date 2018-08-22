@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 
 final ThemeData _androidTheme = ThemeData(
             brightness: Brightness.light,
-            primarySwatch: Colors.deepOrange,
+            primarySwatch: Colors.lightBlue[800],
             accentColor: Colors.deepPurple,
             buttonColor: Colors.deepPurple);
 
 final ThemeData _iOSTheme = ThemeData(
             brightness: Brightness.light,
-            primarySwatch: Colors.grey,
-            accentColor: Colors.deepPurple,
+            primarySwatch: Colors.lightBlue[800],
+            accentColor: Colors.blueGrey,
             buttonColor: Colors.deepPurple,
             );
 

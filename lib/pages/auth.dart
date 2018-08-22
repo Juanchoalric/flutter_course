@@ -37,8 +37,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     return DecorationImage(
       fit: BoxFit.cover,
       colorFilter:
-          ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
-      image: AssetImage('assets/background2.jpeg'),
+          ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
+      image: AssetImage('assets/clouds.jpg'),
     );
   }
 
@@ -101,20 +101,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildAcceptSwitch() {
-    return SwitchListTile(
-      value: _formData['acceptTerms'],
-      onChanged: (bool value) {
-        setState(() {
-          _formData['acceptTerms'] = value;
-        });
-      },
-      title: Text('Accept Terms'),
-    );
-  }
-
   void _submitForm(Function authenticate) async {
-    if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
+    if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
@@ -150,7 +138,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: _authMode == AuthMode.Login ? Text('Login') : Text('SignUp'),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -174,13 +162,12 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                       height: 10.0,
                     ),
                     _buildPasswordConfirmTextField(),
-                    _buildAcceptSwitch(),
                     SizedBox(
                       height: 10.0,
                     ),
                     FlatButton(
                       child: Text(
-                          'Switch to ${_authMode == AuthMode.Login ? 'Signup' : 'Login'}'),
+                          'Switch to ${_authMode == AuthMode.Login ? 'Signup' : 'Login'}', style: TextStyle( color: Colors.black ),),
                       onPressed: () {
                         if (_authMode == AuthMode.Login) {
                           setState(() {
@@ -204,6 +191,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                         return model.isLoading
                             ? AdaptiveProgressIndicator()
                             : RaisedButton(
+                              color: Colors.deepPurple,
+                              elevation: 8.0,
                                 textColor: Colors.white,
                                 child: Text(_authMode == AuthMode.Login
                                     ? 'LOGIN'

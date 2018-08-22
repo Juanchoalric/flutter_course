@@ -118,6 +118,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
         return model.isLoading
             ? Center(child: AdaptiveProgressIndicator())
             : RaisedButton(
+              color: Colors.purple,
                 child: Text('Save'),
                 textColor: Colors.white,
                 onPressed: () => _submitForm(

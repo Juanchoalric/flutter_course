@@ -55,7 +55,7 @@ class _ProductFabState extends State<ProductFab> with TickerProviderStateMixin {
                 },
                 child: Icon(
                   Icons.mail,
-                  color: Theme.of(context).primaryColor,
+                  color: Colors.deepPurple,
                 ),
               ),
             ),
@@ -86,6 +86,7 @@ class _ProductFabState extends State<ProductFab> with TickerProviderStateMixin {
             ),
           ),
           FloatingActionButton(
+            
             heroTag: 'options',
             onPressed: () {
               if(_controller.isDismissed){
@@ -94,13 +95,14 @@ class _ProductFabState extends State<ProductFab> with TickerProviderStateMixin {
                 _controller.reverse();
               }
             },
+            backgroundColor: Colors.deepPurple,
             child: AnimatedBuilder(
               animation: _controller,
               builder: (BuildContext context, Widget child){
                 return Transform(
                   alignment: FractionalOffset.center,
                   transform: Matrix4.rotationZ(_controller.value * 0.5 *math.pi),
-                  child: Icon(_controller.isDismissed ? Icons.more_vert : Icons.close),
+                  child: Icon(_controller.isDismissed ? Icons.more_vert : Icons.close,),
                 );
                  
               },
