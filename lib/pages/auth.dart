@@ -38,7 +38,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
       fit: BoxFit.cover,
       colorFilter:
           ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
-      image: AssetImage('assets/clouds.jpg'),
+      image: AssetImage('assets/tokio.jpg'),
     );
   }
 
