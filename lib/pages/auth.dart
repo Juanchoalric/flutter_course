@@ -138,7 +138,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
     return Scaffold(
       appBar: AppBar(
-        title: _authMode == AuthMode.Login ? Text('Login') : Text('SignUp'),
+        title: _authMode == AuthMode.Login ? Text('Login', style: TextStyle( color: Colors.white),) : Text('SignUp', style: TextStyle( color: Colors.white)),
       ),
       body: Container(
         decoration: BoxDecoration(
