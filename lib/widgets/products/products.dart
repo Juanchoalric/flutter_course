@@ -7,6 +7,9 @@ import '../../models/product.dart';
 import '../../scoped_models/main.dart';
 
 class Products extends StatelessWidget {
+
+  
+
   Widget _buildProductList(List<Product> products) {
     Widget productCards;
     if (products.length > 0) {

@@ -53,9 +53,9 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       onWillPop: () {
-        print('Back button pressed!');
         Navigator.pop(context, false);
         return Future.value(false);
       },
@@ -69,7 +69,8 @@ class ProductPage extends StatelessWidget {
               expandedHeight: 256.0,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
-                title: Text(product.title),
+                centerTitle: true,
+                title: Text(product.title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Oswald', fontSize: 23.0),),
                 background: Hero(
                   tag: product.id,
                   child: FadeInImage(
@@ -86,7 +87,7 @@ class ProductPage extends StatelessWidget {
                 [
                   Container(
                     padding: EdgeInsets.all(10.0),
-                    alignment: Alignment.center,
+                    alignment: Alignment.centerLeft,
                     child: Text(product.title, style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Oswald', fontSize: 23.0),),
                   ),
                   GestureDetector(
@@ -105,6 +106,7 @@ class ProductPage extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.only(bottom: 60.0),
                     padding: EdgeInsets.all(10.0),
                     child: Text(
                       product.description,

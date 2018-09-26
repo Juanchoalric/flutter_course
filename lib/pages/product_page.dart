@@ -35,7 +35,7 @@ class _ProductsPageState extends State<ProductsPage> {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.edit),
+            leading: Icon(Icons.edit, color: Theme.of(context).accentColor,),
             title: Text('Manage Products'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/admin');
@@ -49,9 +49,10 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   Widget _buildProductsList() {
+
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
-        Widget content = Center(child: Text('No Products Found!'));
+        Widget content = Center(child: Text('No Products Found'));
         if (model.displayedProducts.length > 0 && !model.isLoading) {
           content = Products();
         } else if (model.isLoading) {
@@ -64,9 +65,11 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       drawer: _buildSideDrawer(context),
       appBar: AppBar(
+        iconTheme: new IconThemeData(color: Colors.white),
         title: Text('Kioto', style: TextStyle( color: Colors.white)),
         elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
         actions: <Widget>[

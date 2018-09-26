@@ -21,7 +21,7 @@ class ProductsAdminPage extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.shop),
+            leading: Icon(Icons.shop, color: Colors.deepPurple),
             title: Text('All Products'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/');
@@ -41,6 +41,7 @@ class ProductsAdminPage extends StatelessWidget {
       child: Scaffold(
         drawer: _buildSideDrawer(context),
         appBar: AppBar(
+          iconTheme: new IconThemeData(color: Colors.white),
           title: Text('Manage Products', style: TextStyle(color: Colors.white),),
           elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
           bottom: TabBar(

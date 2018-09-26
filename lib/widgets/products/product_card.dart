@@ -37,6 +37,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context);
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
       return Container(
@@ -50,6 +51,7 @@ class ProductCard extends StatelessWidget {
                 .then((_) => model.selectProduct(null));
           },
           child: Card(
+            margin: mediaQuery.orientation == Orientation.landscape ? EdgeInsets.symmetric(horizontal: 60.0) : EdgeInsets.symmetric(horizontal: 0.0),
             elevation: 6.0,
             child: Column(
               children: <Widget>[
@@ -58,7 +60,7 @@ class ProductCard extends StatelessWidget {
                   child: FadeInImage(
                     width: 1000.0,
                     image: NetworkImage(product.image),
-                    height: 150.0,
+                    height: mediaQuery.orientation == Orientation.landscape ? 180.0 : 150.0,
                     fit: BoxFit.cover,
                     placeholder: AssetImage('assets/purple.jpg'),
                   ),
